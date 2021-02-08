@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.koreait.community.board.BoardMapper">
+
+	<insert id="insBoard" useGeneratedKeys="true"
+		keyProperty="boardPk">
+		INSERT INTO t_board
+		(category, seq, title, ctnt, userPk)
+		SELECT #{category}, IFNULL(MAX(seq), 0) + 1, #{title}, #{ctnt},
+		#{userPk}
+		FROM t_board
+		WHERE category = #{category};
+	</insert>
+
+	<select id="selBoardList" resultType="BoardDomain">
+		SELECT A.boardPk, A.seq,
+		A.title, A.hits, A.regDt
+		, A.userPk, B.nm AS writerNm
+		FROM t_board A
+		INNER JOIN t_user B
+		ON A.userPk = B.userPk
+		WHERE A.category =
+		#{category}
+		AND A.isDel = 0
+		ORDER BY A.boardPk DESC;
+	</select>
+
+	<select id="selBoard" resultType="BoardDomain">
+		SELECT A.boardPk, A.category,
+		A.seq, A.ctnt,
+		A.title, A.hits, A.regDt
+		, A.userPk, B.nm AS writerNm
+		FROM t_board
+		A
+		INNER JOIN t_user B
+		ON A.userPk = B.userPk
+		WHERE boardPk = #{boardPk};
+	</select>
+
+	<update id="updBoard">
+		UPDATE t_board
+		<set>
+			<choose>
+				<when test="hits == 1">
+					hits = hits + 1
+				</when>
+				<otherwise>
+					<if test="title != null and title !=''">
+						title = #{title},
+					</if>
+					<if test="ctnt != null and ctnt !=''">
+						ctnt = #{ctnt},
+					</if>
+					<if test="isDel == 1">
+						isDel = 1,
+					</if>
+					modDt = now()
+				</otherwise>
+			</choose>
+		</set>
+		WHERE boardPk = #{boardPk}		<!-- 다음에 만들때는 조회수는 따로 빼는것이 좋다. -->
+		<if test="userPk > 0">
+			AND userPk = #{userPk}
+		</if>
+	</update>
+
+</mapper>

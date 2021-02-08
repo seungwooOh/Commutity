@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+.basic-table {
+	border-collapse: collapse;
+	text-align: left;
+	line-height: 1.5;
+	margin: 20px 20px;
+}
+
+.basic-table th, .basic-table td {
+	font-weight: bold;
+	vertical-align: middle;
+	border: 1px solid #ccc;
+}
+
+.basic-table tr.record {
+	cursor: pointer;
+}
