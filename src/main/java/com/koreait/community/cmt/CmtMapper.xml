@@ -10,8 +10,13 @@
 		WHERE boardPk = #{boardPk}
 	</insert>
 	
-	<select id="selCmtList" resultType="CmtEntity">
-		SELECT * FROM t_board_cmt WHERE boardPk = #{boardPk} ORDER BY seq DESC
+	<select id="selCmtList" resultType="CmtDomain">
+		SELECT A.*, B.nm AS writerNm
+		FROM t_board_cmt AS A
+		INNER JOIN t_user AS B
+		ON A.writerPk = B.userPk
+		WHERE boardPk = #{boardPk}
+		ORDER BY seq DESC;
 	</select>
 	
 	<update id="updCmt">
