@@ -8,7 +8,33 @@
   	</insert>
   	
   	<select id="selUser" resultType="UserEntity">
-  		SELECT * FROM t_user WHERE userId = #{userId}
+  		SELECT 
+  		userPk, userId, userPw, salt, nm, gender, profileImg
+  		, DATE_FORMAT(regDt, '%Y년 %m월 %d일 (%H:%i)') as regDt
+  		FROM t_user
+  		<where>
+  			<if test="userId != null and userId != ''">
+  				userId = #{userId}
+  			</if>
+  			<if test="userPk > 0">
+  				userPk = #{userPk}
+  			</if>
+  		</where>
   	</select>
+  	
+  	<update id="updUser">
+  		UPDATE t_user
+  		<set>
+  			<if test="userPw != null and userPw != ''">
+  				userPw = #{userPw}
+  			</if>
+  			<if test="salt != null and salt != ''">
+  				salt = #{salt}
+  			</if>
+  			<if test="profileImg != null">
+  				profileImg = #{profileImg}
+  			</if>
+ 		</set>
+  	</update>
   	
   </mapper>

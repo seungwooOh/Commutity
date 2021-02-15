@@ -2,7 +2,7 @@ function chkItem(ele, nm) {
 	if(!ele.value) {
 		alert(`${nm}을(를) 작성해 주세요.`);
 		ele.focus();		
-		return true;	
+		return true;
 	}
 }
 
